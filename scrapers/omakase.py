@@ -20,7 +20,7 @@ class OmakaseScraper:
         self._session: cffi_requests.Session | None = None
 
     def start(self):
-        self._session = cffi_requests.Session(impersonate="chrome124")
+        self._session = cffi_requests.Session(impersonate="chrome")
 
     def stop(self):
         if self._session:
