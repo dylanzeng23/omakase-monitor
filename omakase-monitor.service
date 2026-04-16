@@ -1,0 +1,21 @@
+[Unit]
+Description=Omakase Restaurant Monitor
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=dylanz
+WorkingDirectory=/home/dylanz/omakase-monitor
+ExecStart=/home/dylanz/omakase-monitor/venv/bin/python main.py --config config.local.yaml
+Restart=always
+RestartSec=30
+Environment=PYTHONUNBUFFERED=1
+
+# Hardening
+NoNewPrivileges=true
+ProtectSystem=strict
+ReadWritePaths=/home/dylanz/omakase-monitor
+
+[Install]
+WantedBy=multi-user.target

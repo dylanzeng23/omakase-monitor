@@ -1,0 +1,61 @@
+# Omakase Monitor Watchlist — Tabelog 4.1+ Tokyo restaurants found on omakase.in
+# Cross-referenced from 199 Tabelog 4.1+ Tokyo x 695 omakase.in restaurants
+
+restaurants:
+  # === Tabelog 4.5+ ===
+  - {name: Sazenka, omakase_code: ay187967, tabelog_rating: 4.56, cuisine: Chinese}
+  - {name: Shimazu, omakase_code: bz866949, tabelog_rating: 4.56, cuisine: Sushi}
+  - {name: Sushi Namba Hibiya, omakase_code: nm181004, tabelog_rating: 4.52, cuisine: Sushi}
+  - {name: Sawada, omakase_code: gv412216, tabelog_rating: 4.51, cuisine: Sushi}
+  - {name: Quintessence, omakase_code: qt951856, tabelog_rating: 4.50, cuisine: French}
+  - {name: PELLEGRINO, omakase_code: uc009037, tabelog_rating: 4.50, cuisine: Italian}
+
+  # === Tabelog 4.4-4.49 ===
+  - {name: CHIUnE, omakase_code: vh632456, tabelog_rating: 4.49, cuisine: Innovative}
+  - {name: SUGALABO V, omakase_code: iw826671, tabelog_rating: 4.47, cuisine: Innovative}
+  - {name: NK, omakase_code: bq748123, tabelog_rating: 4.46, cuisine: Innovative}
+  - {name: Sushi Hashimoto, omakase_code: gw622283, tabelog_rating: 4.44, cuisine: Sushi}
+  - {name: Makimura, omakase_code: sk517630, tabelog_rating: 4.45, cuisine: Japanese}
+  - {name: Sushi Meino, omakase_code: eu121794, tabelog_rating: 4.47, cuisine: Sushi}
+  - {name: SEZANNE, omakase_code: rz444182, tabelog_rating: 4.43, cuisine: French}
+  - {name: Ginza Oishi, omakase_code: uq829934, tabelog_rating: 4.42, cuisine: Japanese}
+  - {name: Kabuto, omakase_code: xs398896, tabelog_rating: 4.41, cuisine: Unagi}
+  - {name: Sushi Ikkou, omakase_code: ik477122, tabelog_rating: 4.41, cuisine: Sushi}
+
+  # === Tabelog 4.3-4.39 ===
+  - {name: Sushi Yoshitake, omakase_code: yt645031, tabelog_rating: 4.21, cuisine: Sushi}
+  - {name: Sushi Ryujiro, omakase_code: uk638032, tabelog_rating: 4.39, cuisine: Sushi}
+  - {name: Kohaku, omakase_code: cg200943, tabelog_rating: 4.33, cuisine: Japanese}
+  - {name: Ginza Kitagawa, omakase_code: pm510318, tabelog_rating: 4.34, cuisine: Sushi}
+  - {name: Sushi Kimura, omakase_code: km291999, tabelog_rating: 4.35, cuisine: Sushi}
+  - {name: Kurosaki, omakase_code: qk176846, tabelog_rating: 4.34, cuisine: Japanese}
+  - {name: YORONIKU TOKYO, omakase_code: dx551592, tabelog_rating: 4.35, cuisine: Yakiniku}
+  - {name: TACUBO, omakase_code: tc240372, tabelog_rating: 4.36, cuisine: Italian}
+  - {name: PRISMA, omakase_code: jo904865, tabelog_rating: 4.36, cuisine: Italian}
+  - {name: Ji-Cube, omakase_code: nb403649, tabelog_rating: 4.32, cuisine: Chinese}
+  - {name: Sushi Nishizaki, omakase_code: yy800652, tabelog_rating: 4.32, cuisine: Sushi}
+
+  # === Tabelog 4.1-4.29 ===
+  - {name: Kaoru HIROO, omakase_code: mn713270, tabelog_rating: 4.28, cuisine: Japanese}
+  - {name: ASAHINA Gastronome, omakase_code: cv428321, tabelog_rating: 4.25, cuisine: French}
+  - {name: Ebisu YORONIKU, omakase_code: yr300126, tabelog_rating: 4.23, cuisine: Yakiniku}
+  - {name: NARISAWA, omakase_code: ne143874, tabelog_rating: 4.22, cuisine: Innovative}
+  - {name: commedia, omakase_code: ax592372, tabelog_rating: 4.21, cuisine: Italian}
+  - {name: Sushi Masuda, omakase_code: gt442916, tabelog_rating: 4.20, cuisine: Sushi}
+  - {name: Sushi Tsubomi, omakase_code: ew859763, tabelog_rating: 4.19, cuisine: Sushi}
+  - {name: sincere, omakase_code: zj969945, tabelog_rating: 4.16, cuisine: French}
+  - {name: ShinoiS, omakase_code: rv266195, tabelog_rating: 4.16, cuisine: French}
+  - {name: unis, omakase_code: ze301570, tabelog_rating: 4.16, cuisine: Innovative}
+  - {name: Sushi Miyuki, omakase_code: uk736901, tabelog_rating: 4.16, cuisine: Sushi}
+  - {name: Sushi Saito Hanare NANZUKA, omakase_code: hw550861, tabelog_rating: 4.60, cuisine: Sushi}
+  - {name: Sushi Shunsuke Asagaya, omakase_code: co823025, tabelog_rating: 4.31, cuisine: Sushi}
+  - {name: Sushi Yuki, omakase_code: tj576606, tabelog_rating: 4.29, cuisine: Sushi}
+  - {name: Sushi Riku, omakase_code: mk317582, tabelog_rating: 4.35, cuisine: Sushi}
+  - {name: Sushi Sho Yotsuya, omakase_code: ne426931, tabelog_rating: 4.45, cuisine: Sushi}
+  - {name: Terakoya Sushi Sho, omakase_code: sf736636, tabelog_rating: 4.10, cuisine: Sushi}
+  - {name: Sushi Masashi, omakase_code: di508422, tabelog_rating: 4.30, cuisine: Sushi}
+  - {name: Sushi Keita, omakase_code: ip613855, tabelog_rating: 4.30, cuisine: Sushi}
+  - {name: Sushi Kaminari, omakase_code: fn342290, tabelog_rating: 0, cuisine: Sushi}
+  - {name: Sushi Inomata, omakase_code: in410639, tabelog_rating: 0, cuisine: Sushi}
+  - {name: mærge, omakase_code: og654890, tabelog_rating: 4.10, cuisine: Innovative}
+  - {name: Sushi Namba Yotsuya, omakase_code: pj793267, tabelog_rating: 4.52, cuisine: Sushi}

@@ -1,0 +1,8 @@
+config.local.yaml
+browser_data/
+*.db
+*.log
+__pycache__/
+venv/
+.venv/
+debug_*.png

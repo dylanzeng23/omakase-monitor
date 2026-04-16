@@ -1,0 +1,22 @@
+omakase:
+  email: "${OMAKASE_EMAIL}"
+  password: "${OMAKASE_PASSWORD}"
+
+target_dates:
+  - "2026-05-04"
+  - "2026-05-05"
+  - "2026-05-06"
+
+min_tabelog_rating: 4.3
+
+telegram:
+  bot_token: "${TELEGRAM_BOT_TOKEN}"
+  chat_id: "${TELEGRAM_CHAT_ID}"
+
+schedule:
+  interval_minutes: 15
+  min_delay_seconds: 15
+  max_delay_seconds: 25
+
+browser:
+  headless: true
