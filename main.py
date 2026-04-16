@@ -16,7 +16,7 @@ import db
 from models import AvailabilitySlot, Config, Restaurant, RunLog
 from notifier import (
     send_alerts, send_message, build_bot_app, set_search_callback,
-    set_watchlist, is_search_requested,
+    set_watchlist, set_watchlist_path, is_search_requested,
 )
 from scrapers.omakase import OmakaseScraper
 
@@ -163,6 +163,7 @@ async def scheduler_loop(config: Config, watchlist: list[Restaurant]):
 
     set_search_callback(search_callback)
     set_watchlist(watchlist)
+    set_watchlist_path(Path(__file__).parent / "watchlist.yaml")
 
     # Start Telegram bot polling
     bot_app = None
@@ -176,11 +177,13 @@ async def scheduler_loop(config: Config, watchlist: list[Restaurant]):
             config,
             "Omakase Monitor started.\n\n"
             "Commands:\n"
+            "  /check - Run now\n"
             "  /status - Last run info\n"
             "  /list - Watched restaurants\n"
             "  /recent - Recent finds\n"
-            "  /check - Run now\n"
             "  /dates - Target dates\n"
+            "  /add code Name - Add restaurant\n"
+            "  /remove Name - Remove restaurant\n"
             f"\nMonitoring {len(watchlist)} restaurants every {config.interval_minutes}min\n"
             f"Target dates: {', '.join(config.target_dates)}"
         )

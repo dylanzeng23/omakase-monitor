@@ -1,9 +1,12 @@
 import logging
+import re
+from pathlib import Path
 
+import yaml
 from telegram import Update, Bot
 from telegram.ext import Application, CommandHandler, MessageHandler, ContextTypes, filters
 
-from models import AvailabilitySlot, Config
+from models import AvailabilitySlot, Config, Restaurant
 import db
 
 logger = logging.getLogger(__name__)
@@ -151,6 +154,7 @@ async def send_message(config: Config, text: str):
 _config: Config | None = None
 _search_callback = None
 _watchlist: list = []
+_watchlist_path: Path | None = None
 
 
 def set_config(config: Config):
@@ -163,9 +167,33 @@ def set_watchlist(watchlist: list):
     _watchlist = watchlist
 
 
+def set_watchlist_path(path: Path):
+    global _watchlist_path
+    _watchlist_path = path
+
+
 def set_search_callback(callback):
     global _search_callback
     _search_callback = callback
+
+
+def _save_watchlist():
+    """Write current watchlist back to YAML file."""
+    if not _watchlist_path:
+        return
+    restaurants = []
+    for r in _watchlist:
+        entry = {"name": r.name, "omakase_code": r.omakase_code}
+        if r.tabelog_rating:
+            entry["tabelog_rating"] = r.tabelog_rating
+        if r.cuisine:
+            entry["cuisine"] = r.cuisine
+        if r.location and r.location != "Tokyo":
+            entry["location"] = r.location
+        restaurants.append(entry)
+    with open(_watchlist_path, "w") as f:
+        yaml.dump({"restaurants": restaurants}, f, default_flow_style=False,
+                  allow_unicode=True, sort_keys=False)
 
 
 async def cmd_status(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -228,15 +256,105 @@ async def cmd_help(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Handle /help command."""
     await update.message.reply_text(
         "Omakase Monitor Commands:\n"
+        "  /check - Run immediate check\n"
         "  /status - Last run info\n"
         "  /list - Monitored restaurants\n"
         "  /recent - Recent availability\n"
         "  /dates - Target dates\n"
-        "  /check - Run immediate check\n"
-        "  /help - This message\n\n"
-        "Text commands:\n"
-        "  check / search - Trigger immediate scan"
+        "  /add ay187967 Name - Add restaurant\n"
+        "  /remove Name - Remove restaurant\n"
+        "  /help - This message"
     )
+
+
+async def cmd_add(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Handle /add command - add a restaurant.
+    /add ay187967                        — by code
+    /add ay187967 Sazenka                — code + name
+    /add ay187967 Sazenka Sushi 4.56     — code + name + cuisine + rating
+    /add https://omakase.in/en/r/ay187967 — paste URL
+    """
+    args = (update.message.text or "").split()[1:]
+    if not args:
+        await update.message.reply_text(
+            "Usage:\n"
+            "  /add ay187967\n"
+            "  /add ay187967 Sazenka\n"
+            "  /add ay187967 Sazenka Sushi 4.56\n"
+            "  /add https://omakase.in/en/r/ay187967"
+        )
+        return
+
+    first = args[0]
+    if "omakase.in" in first:
+        match = re.search(r'/r/([a-z0-9]+)', first)
+        code = match.group(1) if match else None
+        if not code:
+            await update.message.reply_text("Could not parse omakase code from URL.")
+            return
+    else:
+        code = first.lower()
+
+    for r in _watchlist:
+        if r.omakase_code == code:
+            await update.message.reply_text(f"Already watching: {r.name} ({code})")
+            return
+
+    name = args[1] if len(args) > 1 else code
+    cuisine = args[2] if len(args) > 2 else ""
+    rating = 0.0
+    if len(args) > 3:
+        try:
+            rating = float(args[3])
+        except ValueError:
+            pass
+
+    new_r = Restaurant(name=name, omakase_code=code, tabelog_rating=rating, cuisine=cuisine)
+    _watchlist.append(new_r)
+    _save_watchlist()
+
+    await update.message.reply_text(
+        f"Added: {name} ({code})\n"
+        f"https://omakase.in/en/r/{code}\n"
+        f"Total: {len(_watchlist)} restaurants"
+    )
+
+
+async def cmd_remove(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Handle /remove command.
+    /remove 3          — by index from /list
+    /remove Sazenka    — by name (partial, case-insensitive)
+    """
+    args = (update.message.text or "").split(maxsplit=1)
+    if len(args) < 2:
+        await update.message.reply_text("Usage: /remove 3 or /remove Sazenka")
+        return
+
+    query = args[1].strip()
+    removed = None
+
+    try:
+        idx = int(query) - 1
+        if 0 <= idx < len(_watchlist):
+            removed = _watchlist.pop(idx)
+        else:
+            await update.message.reply_text(f"Invalid index. Use 1-{len(_watchlist)}.")
+            return
+    except ValueError:
+        query_lower = query.lower()
+        for i, r in enumerate(_watchlist):
+            if query_lower in r.name.lower() or query_lower == r.omakase_code:
+                removed = _watchlist.pop(i)
+                break
+
+    if removed:
+        _save_watchlist()
+        await update.message.reply_text(
+            f"Removed: {removed.name} ({removed.omakase_code})\n"
+            f"Remaining: {len(_watchlist)} restaurants"
+        )
+    else:
+        await update.message.reply_text(f"Not found: {query}")
 
 
 _search_requested = False
@@ -288,6 +406,8 @@ def build_bot_app(config: Config) -> Application:
     app.add_handler(CommandHandler("recent", cmd_recent))
     app.add_handler(CommandHandler("dates", cmd_dates))
     app.add_handler(CommandHandler("check", cmd_check))
+    app.add_handler(CommandHandler("add", cmd_add))
+    app.add_handler(CommandHandler("remove", cmd_remove))
     app.add_handler(CommandHandler("help", cmd_help))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
     return app
