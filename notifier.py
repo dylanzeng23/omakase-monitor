@@ -36,6 +36,19 @@ JP_NAMES = {
 }
 
 
+def _fmt_restaurant(r: dict) -> str:
+    """Format one restaurant entry consistently: Name [rating] JP — cuisine"""
+    jp = JP_NAMES.get(r["name"], "")
+    parts = [r["name"]]
+    if r.get("rating"):
+        parts.append(f"[{r['rating']}]")
+    if jp:
+        parts.append(jp)
+    if r.get("cuisine"):
+        parts.append(f"— {r['cuisine']}")
+    return " ".join(parts)
+
+
 def format_report(slots: list[AvailabilitySlot], report: list[dict]) -> list[str]:
     """Format a full check report with all restaurant statuses. Returns list of messages."""
     if not report:
@@ -46,36 +59,30 @@ def format_report(slots: list[AvailabilitySlot], report: list[dict]) -> list[str
     closed = [r for r in report if r.get("status") == "closed"]
     errors = [r for r in report if r.get("status") == "error"]
 
-    lines = []
-    lines.append(f"Checked {len(report)} restaurants\n")
+    lines = [f"Checked {len(report)} restaurants", ""]
 
     if available:
         lines.append("=== AVAILABLE ===")
         for r in available:
-            jp = JP_NAMES.get(r["name"], "")
-            rating = f" [{r['rating']}]" if r.get("rating") else ""
-            lines.append(f"  {r['name']}{rating} {jp}")
-            lines.append(f"    {r['cuisine']} | {r['status']}")
-        lines.append("")
+            lines.append(f"  {_fmt_restaurant(r)}")
+            lines.append(f"  {r['status']}")
+            lines.append("")
 
     if open_no_slots:
-        lines.append(f"--- Open but no target dates ({len(open_no_slots)}) ---")
+        lines.append(f"--- Open ({len(open_no_slots)}) ---")
         for r in open_no_slots:
-            jp = JP_NAMES.get(r["name"], "")
-            rating = f"[{r['rating']}]" if r.get("rating") else ""
-            lines.append(f"  {r['name']} {jp} {rating} - {r['status']}")
-        lines.append("")
+            lines.append(f"  {_fmt_restaurant(r)}")
+            lines.append(f"  {r['status']}")
+            lines.append("")
 
     if closed:
         lines.append(f"--- Closed ({len(closed)}) ---")
         for r in sorted(closed, key=lambda x: -(x.get("rating") or 0)):
-            jp = JP_NAMES.get(r["name"], "")
-            rating = f"[{r['rating']}]" if r.get("rating") else ""
-            cuisine = r.get("cuisine", "")
-            lines.append(f"  {r['name']} {jp} {rating} {cuisine}")
+            lines.append(f"  {_fmt_restaurant(r)}")
+        lines.append("")
 
     if errors:
-        lines.append(f"\n--- Errors ({len(errors)}) ---")
+        lines.append(f"--- Errors ({len(errors)}) ---")
         for r in errors:
             lines.append(f"  {r['name']}")
 
@@ -222,10 +229,13 @@ async def cmd_list(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text("No restaurants in watchlist.")
         return
 
-    lines = [f"Watching {len(_watchlist)} restaurants:"]
+    lines = [f"Watching {len(_watchlist)} restaurants:", ""]
     for i, r in enumerate(_watchlist, 1):
-        rating = f" ({r.tabelog_rating})" if r.tabelog_rating else ""
-        lines.append(f"{i}. {r.name}{rating}")
+        jp = JP_NAMES.get(r.name, "")
+        rating = f" [{r.tabelog_rating}]" if r.tabelog_rating else ""
+        jp_str = f" {jp}" if jp else ""
+        cuisine = f" — {r.cuisine}" if r.cuisine else ""
+        lines.append(f"{i}. {r.name}{rating}{jp_str}{cuisine}")
     await update.message.reply_text("\n".join(lines))
 
 
